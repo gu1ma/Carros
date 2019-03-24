@@ -46,7 +46,7 @@ class CarroAdapter(
             img.loadUrl(carro.urlFoto, progress)
 
             //Adicionando evento de clique na linha
-            setOnClickListener( View.OnClickListener { onClick(carro) } )
+            setOnClickListener( { onClick(carro) } )
         }
 
     }

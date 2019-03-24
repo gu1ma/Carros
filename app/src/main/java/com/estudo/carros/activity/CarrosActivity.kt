@@ -30,22 +30,10 @@ class CarrosActivity : BaseActivity(){
         this.tipo = intent.getSerializableExtra("tipo") as TipoCarro;
         val nomeCarro = context.getString(tipo.string);
 
-        //Log.d("Log", nomeCarro)
-
-        //vamos mostrar a toolbar
-        //setUpToolbar(R.id.toolbar, nomeCarro, true);
-
         setUpToolbar(R.id.toolbar);
 
         supportActionBar?.title = nomeCarro;
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
-
-        //setTitle(nomeCarro);
-        //setDisplayHomeAsUpEnabled(true)
-
-        //mostramos o carro na tela
- //       val textView = findViewById<TextView>(R.id.text);
-//        textView.text = "Carros $nomeCarro";
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.itemAnimator = DefaultItemAnimator()

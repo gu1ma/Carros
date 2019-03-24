@@ -43,10 +43,14 @@ class CarrosFragment : BaseFragment()
     }
 
 
-    override fun onResume() {
-        super.onResume()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         taskCarros()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     private fun taskCarros(){
