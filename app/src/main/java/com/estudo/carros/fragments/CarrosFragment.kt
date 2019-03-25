@@ -7,15 +7,19 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.estudo.carros.R
 import com.estudo.carros.activity.CarroActivity
 import com.estudo.carros.adapter.CarroAdapter
 import com.estudo.carros.domain.Carro
 import com.estudo.carros.domain.CarroService
+import com.estudo.carros.utils.SystemUtils
 import com.estudo.carros.utils.TipoCarro
 import kotlinx.android.synthetic.main.fragment_carros.*
 import kotlinx.android.synthetic.main.include_progress.*
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.uiThread
 
 class CarrosFragment : BaseFragment()
 {
@@ -54,23 +58,28 @@ class CarrosFragment : BaseFragment()
     }
 
     private fun taskCarros(){
-        //Mostra uma janela de progresso
-        progress.visibility = View.VISIBLE
 
-        object: Thread(){
-            override fun run() {
-                //busca carros
+        if(!SystemUtils.isNetworkAvaiable(context!!)){
+            //Por enquanto mostramos somente um toask, porem futuramente irei criar uma tela para este caso
+            Toast.makeText(context, "Sem conexão com a internet no momento...", Toast.LENGTH_LONG).show()
+        }
+        else{
+            //Mostra uma janela de progresso
+            progress.visibility = View.VISIBLE
+
+            doAsync {
+                //Busca carros
                 carros = CarroService.getCarros(tipo)
 
-                //atualiza a lista de carros
-                activity?.runOnUiThread(Runnable {
+                uiThread {
+                    //atualiza a lista de carros
                     recyclerView.adapter = CarroAdapter(carros){ onClickCarro(it) }
-                    //fecha o dialog
+                    //fecha o progress
                     progress.visibility = View.INVISIBLE
-                })
+                }
 
             }
-        }.start()
+        }
 
     }
 
