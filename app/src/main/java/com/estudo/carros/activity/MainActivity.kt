@@ -1,5 +1,6 @@
 package com.estudo.carros.activity
 
+import android.app.ProgressDialog.show
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -31,8 +32,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setUpToolbar(R.id.toolbar);
 
         fab.setOnClickListener {
-            Snackbar.make(it, "Adicionar novo carro", Snackbar.LENGTH_LONG)
-                .show()
+            //Snackbar.make(it, "Adicionar novo carro", Snackbar.LENGTH_LONG)
+            //    .show()
+
+            startActivity<CarroFormActivity>()
+
         }
 
         //setando drawer

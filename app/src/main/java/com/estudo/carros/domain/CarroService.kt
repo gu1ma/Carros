@@ -4,10 +4,8 @@ import android.content.Context
 import android.support.design.widget.Snackbar
 import android.widget.Toast
 import com.estudo.carros.R
-import com.estudo.carros.utils.HttpHelper
-import com.estudo.carros.utils.SystemUtils
-import com.estudo.carros.utils.TipoCarro
-import com.estudo.carros.utils.fromJson
+import com.estudo.carros.utils.*
+import okhttp3.Response
 import org.json.JSONArray
 
 
@@ -19,15 +17,20 @@ class CarroService {
 
         //Busca carro por tipo
         fun getCarros(tipo: TipoCarro): List<Carro>{
-                //
-                val url = "$BASE_URL/tipo/${tipo.name}"
+            //
+            val url = "$BASE_URL/tipo/${tipo.name}"
+            //
+            val json = HttpHelper.get(url)
+            return fromJson(json)
+        }
 
-                //
-                val json = HttpHelper.get(url)
+        fun save(carro: Carro): Response{
+            //post do JSON carro
+            val json = HttpHelper.post(BASE_URL, carro.toJson())
+            //leitura da resposta
+            val response = fromJson<Response>(json)
 
-                return fromJson(json)
-
-
+            return response
         }
 
     }

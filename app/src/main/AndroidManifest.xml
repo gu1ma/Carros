@@ -32,6 +32,7 @@
         <activity android:name=".activity.CarrosActivity" android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.SiteLivroActivity" android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.CarroActivity" android:parentActivityName=".activity.MainActivity" />
+        <activity android:name=".activity.CarroFormActivity" android:parentActivityName=".activity.MainActivity" />
 
     </application>
 
