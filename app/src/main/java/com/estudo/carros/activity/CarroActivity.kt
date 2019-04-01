@@ -6,10 +6,14 @@ import android.view.Menu
 import android.view.MenuItem
 import com.estudo.carros.domain.Carro
 import com.estudo.carros.R;
+import com.estudo.carros.domain.CarroService
 import com.estudo.carros.utils.loadUrl
 import kotlinx.android.synthetic.main.activity_carro.*
 import kotlinx.android.synthetic.main.activity_carro_contents.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.uiThread
 
 class CarroActivity : BaseActivity(){
     val carro by lazy { intent.getSerializableExtra("carro") as Carro }
@@ -41,10 +45,27 @@ class CarroActivity : BaseActivity(){
                 finish()
             }
             R.id.action_deletar -> {
-                toast("deletar carro")
+                //toast("deletar carro")
+                alert("Tem certeza que deseja excluir este carro?"){
+                    title = "Atenção"
+                    positiveButton(R.string.sim) { taskDeletar() }
+                    negativeButton(R.string.nao) {}
+                }.show()
             }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    //task para deletar carro
+    private fun taskDeletar(){
+        doAsync {
+            val response = CarroService.delete(carro)
+
+            uiThread {
+                toast(response.msg)
+                finish()
+            }
+        }
     }
 }

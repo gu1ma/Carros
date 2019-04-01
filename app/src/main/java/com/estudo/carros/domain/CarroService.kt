@@ -5,7 +5,7 @@ import android.support.design.widget.Snackbar
 import android.widget.Toast
 import com.estudo.carros.R
 import com.estudo.carros.utils.*
-import okhttp3.Response
+import com.estudo.carros.domain.Response
 import org.json.JSONArray
 
 
@@ -28,6 +28,15 @@ class CarroService {
             //post do JSON carro
             val json = HttpHelper.post(BASE_URL, carro.toJson())
             //leitura da resposta
+            val response = fromJson<Response>(json)
+
+            return response
+        }
+
+        //deletar carro
+        fun delete(carro: Carro): Response{
+            val url = "$BASE_URL/${carro.id}"
+            var json = HttpHelper.delete(url)
             val response = fromJson<Response>(json)
 
             return response
