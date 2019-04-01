@@ -7,9 +7,11 @@ import android.view.MenuItem
 import com.estudo.carros.domain.Carro
 import com.estudo.carros.R;
 import com.estudo.carros.domain.CarroService
+import com.estudo.carros.utils.RefreshListEvent
 import com.estudo.carros.utils.loadUrl
 import kotlinx.android.synthetic.main.activity_carro.*
 import kotlinx.android.synthetic.main.activity_carro_contents.*
+import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
@@ -63,6 +65,8 @@ class CarroActivity : BaseActivity(){
             val response = CarroService.delete(carro)
 
             uiThread {
+                //chamada do event bus para indicar que houve alguma alteração na lista
+                EventBus.getDefault().post(RefreshListEvent())
                 toast(response.msg)
                 finish()
             }

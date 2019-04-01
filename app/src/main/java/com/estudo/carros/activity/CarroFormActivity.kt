@@ -7,8 +7,10 @@ import android.view.MenuItem
 import com.estudo.carros.R
 import com.estudo.carros.domain.Carro
 import com.estudo.carros.domain.CarroService
+import com.estudo.carros.utils.RefreshListEvent
 import com.estudo.carros.utils.TipoCarro
 import kotlinx.android.synthetic.main.activity_carro_form_contents.*
+import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -45,6 +47,8 @@ class CarroFormActivity: BaseActivity(){
             //
             val response = CarroService.save(c)
             uiThread {
+                //chamada do event bus para indicar que houve alguma alteração na lista
+                EventBus.getDefault().post(RefreshListEvent())
                 toast("OK")
                 finish()
             }
