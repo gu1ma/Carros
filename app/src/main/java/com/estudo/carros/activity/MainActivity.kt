@@ -8,6 +8,7 @@ import android.support.design.widget.NavigationView
 import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -15,6 +16,7 @@ import android.view.MenuItem
 import android.view.View
 import com.estudo.carros.R
 import com.estudo.carros.adapter.TabsAdapter
+import com.estudo.carros.utils.Prefs
 import com.estudo.carros.utils.TipoCarro
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -25,18 +27,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //setSupportActionBar(toolbar)
 
 
         //setando toolbar
         setUpToolbar(R.id.toolbar);
 
         fab.setOnClickListener {
-            //Snackbar.make(it, "Adicionar novo carro", Snackbar.LENGTH_LONG)
-            //    .show()
-
             startActivity<CarroFormActivity>()
-
         }
 
         //setando drawer
@@ -58,6 +55,26 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         //Cor branca no texto
         val cor = ContextCompat.getColor(context, R.color.white)
         tabLayout.setTabTextColors(cor, cor)
+
+        //
+        val tabIndex = Prefs.getInt("tabIndex")
+        viewPager.currentItem = tabIndex
+
+        viewPager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            override fun onPageSelected(index: Int) {
+                Prefs.setInt("tabIndex", index)
+            }
+
+
+        })
 
     }
 
@@ -105,25 +122,20 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 toast("Clique em todos");
             }
             R.id.nav_item_carros_classicos -> {
-                //toast("Clique em classicos");
-                //startActivity<CarrosActivity>("tipo" to TipoCarro.Classicos)
                 val intent = Intent(context, CarrosActivity::class.java);
                 intent.putExtra("tipo", TipoCarro.Classicos);
                 startActivity(intent);
             }
             R.id.nav_item_carros_esportivos -> {
-                //toast("Clique em esportivos");
                 startActivity<CarrosActivity>("tipo" to TipoCarro.Esportivos);
             }
             R.id.nav_item_carros_luxo -> {
-                //toast("Clique em luxo");
                 startActivity<CarrosActivity>("tipo" to TipoCarro.Luxo);
             }
             R.id.nav_item_settings -> {
                 toast("Clique em configurações");
             }
             R.id.nav_item_site_livro -> {
-                //toast("Clique em site do livro");
                 startActivity<SiteLivroActivity>()
             }
         }
