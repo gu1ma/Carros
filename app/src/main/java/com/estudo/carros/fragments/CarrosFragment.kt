@@ -16,6 +16,7 @@ import com.estudo.carros.domain.CarroService
 import com.estudo.carros.utils.RefreshListEvent
 import com.estudo.carros.utils.SystemUtils
 import com.estudo.carros.utils.TipoCarro
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_carros.*
 import kotlinx.android.synthetic.main.include_progress.*
 import org.greenrobot.eventbus.EventBus
@@ -24,6 +25,10 @@ import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.uiThread
+
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.functions.Consumer
 
 class CarrosFragment : BaseFragment()
 {
@@ -77,18 +82,23 @@ class CarrosFragment : BaseFragment()
             //Mostra uma janela de progresso
             progress.visibility = View.VISIBLE
 
-            doAsync {
-                //Busca carros
-                carros = CarroService.getCarros(tipo)
-
-                uiThread {
-                    //atualiza a lista de carros
-                    recyclerView.adapter = CarroAdapter(carros){ onClickCarro(it) }
-                    //fecha o progress
+            //Buscando os carros
+            Observable
+                .fromCallable({ CarroService.getCarros(tipo) })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    //Atualizamos a interface
+                    // onNext()
+                    recyclerView.adapter = CarroAdapter(it){ onClickCarro(it) }
                     progress.visibility = View.INVISIBLE
-                }
+                },
+                {
+                    //onError()
+                    Toast.makeText(context, "Ocorreu um erro!", Toast.LENGTH_SHORT).show();
+                    progress.visibility = View.INVISIBLE;
 
-            }
+                });
         }
 
     }
