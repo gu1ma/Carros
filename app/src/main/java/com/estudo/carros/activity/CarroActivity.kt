@@ -1,21 +1,21 @@
 package com.estudo.carros.activity
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.estudo.carros.domain.Carro
+import android.view.View
 import com.estudo.carros.R;
-import com.estudo.carros.domain.CarroService
+import com.estudo.carros.domain.*
 import com.estudo.carros.utils.RefreshListEvent
 import com.estudo.carros.utils.loadUrl
 import kotlinx.android.synthetic.main.activity_carro.*
 import kotlinx.android.synthetic.main.activity_carro_contents.*
 import org.greenrobot.eventbus.EventBus
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.*
 
 class CarroActivity : BaseActivity(){
     val carro by lazy { intent.getSerializableExtra("carro") as Carro }
@@ -32,6 +32,53 @@ class CarroActivity : BaseActivity(){
         //Mostra foto do carro
         appBarImg.loadUrl(carro.urlFoto)
 
+        fab.setOnClickListener( View.OnClickListener{ onClickFavoritar(carro) } )
+
+        checkIfIsFavorite()
+    }
+
+    private fun onClickFavoritar(carro: Carro){
+        taskFavoritar(carro)
+    }
+
+    private fun taskFavoritar(carro: Carro){
+        doAsync {
+            val favoritado = FavoritosService.favoritar(carro)
+            uiThread {
+                //Dispara evento para atualizar a lista
+                EventBus.getDefault().post(RefreshListEvent())
+                //Alerta de sucesso
+                setFavoriteColor(favoritado);
+                toast(if(favoritado) R.string.msg_carro_favoritado else R.string.msg_carro_desfavoritado)
+            }
+        }
+    }
+
+    private fun checkIfIsFavorite() {
+
+        doAsync {
+            val dao = DatabaseManager.getCarroDAO();
+            val isFavorite = dao.getById(carro.id);
+            uiThread {
+                if(isFavorite == null)
+                {
+                    setFavoriteColor(false);
+                }
+                else
+                {
+                    setFavoriteColor(true);
+                }
+            }
+        }
+    }
+
+    private fun setFavoriteColor(favoritado:Boolean)
+    {
+        val background = ContextCompat.getColor(this, if(favoritado) R.color.favorito_on else R.color.favorito_off);
+        val color = ContextCompat.getColor(this, if(favoritado) R.color.yellow else R.color.favorito_on);
+
+        fab.backgroundTintList = ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(background));
+        fab.setColorFilter(color);
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

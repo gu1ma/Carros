@@ -30,13 +30,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.functions.Consumer
 
-class CarrosFragment : BaseFragment()
+open class CarrosFragment : BaseFragment()
 {
     private var tipo = TipoCarro.Classicos;
-    private var carros = listOf<Carro>()
+    protected var carros = listOf<Carro>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(arguments != null){
+            tipo = arguments?.getSerializable("tipo") as TipoCarro
+        }
+
         //registra o event
         EventBus.getDefault().register(this)
     }
@@ -45,9 +49,6 @@ class CarrosFragment : BaseFragment()
         //return super.onCreateView(inflater, container, savedInstanceState)
 
         val view = inflater.inflate(R.layout.fragment_carros, container, false)
-
-        //tipo de argumentos
-        this.tipo = arguments?.getSerializable("tipo") as TipoCarro
 
         return view
     }
@@ -72,7 +73,7 @@ class CarrosFragment : BaseFragment()
         super.onResume()
     }
 
-    private fun taskCarros(){
+    open fun taskCarros(){
 
         if(!SystemUtils.isNetworkAvaiable(context!!)){
             //Por enquanto mostramos somente um toask, porem futuramente irei criar uma tela para este caso
