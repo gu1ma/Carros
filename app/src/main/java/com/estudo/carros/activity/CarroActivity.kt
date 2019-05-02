@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.estudo.carros.domain.Carro
 import com.estudo.carros.R;
 import com.estudo.carros.domain.CarroService
+import com.estudo.carros.domain.FavoritosService
 import com.estudo.carros.utils.RefreshListEvent
 import com.estudo.carros.utils.loadUrl
 import kotlinx.android.synthetic.main.activity_carro.*
 import kotlinx.android.synthetic.main.activity_carro_contents.*
 import org.greenrobot.eventbus.EventBus
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.*
 
 class CarroActivity : BaseActivity(){
     val carro by lazy { intent.getSerializableExtra("carro") as Carro }
@@ -32,6 +31,24 @@ class CarroActivity : BaseActivity(){
         //Mostra foto do carro
         appBarImg.loadUrl(carro.urlFoto)
 
+        fab.setOnClickListener( View.OnClickListener{ onClickFavoritar(carro) } )
+
+    }
+
+    private fun onClickFavoritar(carro: Carro){
+        taskFavoritar(carro)
+    }
+
+    private fun taskFavoritar(carro: Carro){
+        doAsync {
+            val favoritado = FavoritosService.favoritar(carro)
+            uiThread {
+                //Dispara evento para atualizar a lista
+                EventBus.getDefault().post(RefreshListEvent())
+                //Alerta de sucesso
+                toast(if(favoritado) R.string.msg_carro_favoritado else R.string.msg_carro_desfavoritado)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

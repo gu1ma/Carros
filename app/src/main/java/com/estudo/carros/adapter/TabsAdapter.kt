@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.estudo.carros.fragments.CarrosFragment
+import com.estudo.carros.fragments.FavoritosFragment
 import com.estudo.carros.utils.TipoCarro
 
 class TabsAdapter(private val context: Context, fm: FragmentManager): FragmentPagerAdapter(fm){
@@ -14,7 +15,8 @@ class TabsAdapter(private val context: Context, fm: FragmentManager): FragmentPa
     private fun getTipoCarro(position: Int) = when(position){
         0 -> TipoCarro.Classicos
         1 -> TipoCarro.Esportivos
-        else -> TipoCarro.Luxo
+        2 -> TipoCarro.Luxo
+        else -> TipoCarro.Favoritos
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
@@ -24,6 +26,11 @@ class TabsAdapter(private val context: Context, fm: FragmentManager): FragmentPa
     }
 
     override fun getItem(position: Int): Fragment {
+        if(position == 3){
+            //Fragment de favoritos
+            return FavoritosFragment()
+        }
+
         val tipo = getTipoCarro(position)
         val f: Fragment = CarrosFragment()
         val arguments = Bundle()
@@ -34,6 +41,6 @@ class TabsAdapter(private val context: Context, fm: FragmentManager): FragmentPa
     }
 
     override fun getCount(): Int {
-        return 3
+        return 4
     }
 }

@@ -47,7 +47,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun setUpViewPageTabs(){
         //Configuração do View Pager + Tabs
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = 3
         viewPager.adapter = TabsAdapter(context, supportFragmentManager)
 
         tabLayout.setupWithViewPager(viewPager)
