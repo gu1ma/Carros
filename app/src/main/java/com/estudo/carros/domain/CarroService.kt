@@ -39,6 +39,13 @@ class CarroService {
             var json = HttpHelper.delete(url)
             val response = fromJson<Response>(json)
 
+            if(response.isOk())
+            {
+                //se removeu corretamente do web service, removemos tb do banco de dados interno
+                val dao = DatabaseManager.getCarroDAO();
+                dao.delete(carro);
+            }
+
             return response
         }
 
