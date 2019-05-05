@@ -1,12 +1,6 @@
 package com.estudo.carros.domain
 
-import android.content.Context
-import android.support.design.widget.Snackbar
-import android.widget.Toast
-import com.estudo.carros.R
 import com.estudo.carros.utils.*
-import com.estudo.carros.domain.Response
-import org.json.JSONArray
 
 
 class CarroService {

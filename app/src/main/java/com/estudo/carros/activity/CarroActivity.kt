@@ -1,6 +1,8 @@
 package com.estudo.carros.activity
 
+import android.content.Intent
 import android.content.res.ColorStateList
+import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.v4.content.ContextCompat
@@ -26,6 +28,17 @@ class CarroActivity : BaseActivity(){
         setContentView(R.layout.activity_carro)
 
         setUpToolbar(R.id.toolbar, carro.nome, true)
+
+        //atualizando img do player
+        img.loadUrl(carro.urlFoto);
+
+        //listener para dar play no video
+        imgPlayVideo.setOnClickListener {
+            val url = carro.urlVideo;
+            val intent = Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(url), "video/*");
+            startActivity(intent);
+        }
 
         //Atualiza descrição
         tDesc.text = carro.desc
